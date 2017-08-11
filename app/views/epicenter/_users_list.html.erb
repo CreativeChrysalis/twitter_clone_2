@@ -1,0 +1,61 @@
+<!-- copy/pasted the all_users content to mimic the format of that page,
+& made this page a partial so that we can call it for the following mimic pages:
+
+all_users.html.erb
+followers.html.erb
+following.html.erb
+ -->
+ 
+<div class="row">
+  <% @users.each do |user| %>
+    <div class="col-md-3">
+      <div class="well user-list-wells">
+        <div class="row">
+          <div class="col-md-6">
+            <% if user.avatar.blank? == false %>
+              <%= image_tag user.avatar.url, size:45, class: "user-pic-nav" %>
+            <% end %>
+          </div>
+          <div class="col-md-6">
+            <p>
+              <% if current_user.following.include?(user.id) %>
+              <!--js wasn't working for the unfollow button, so we moved the js styling to bottom
+            of this doc and changed unfollow from an id into a class  -->
+                <%= link_to "Following", unfollow_path(id: user.id), class: "btn btn-primary unfollow_btn" %>
+              <% else %>
+                <% if current_user.id != user.id %>
+                  <%= link_to "Follow", now_following_path(id: user.id), class: "btn btn-primary" %>
+                <% end %>
+              <% end %>
+            </p>
+          </div>
+        </div>
+        <div class="row">
+            <h3><%= user.name %></h3>
+          <%= link_to show_user_path(id: user.id) do %>
+
+            <p>@<%= user.username %></p>
+          <% end %>
+          <p>
+            <%= user.bio %>
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- changed #unfollow to .unfollow for CSS syntax -->
+<script type= "text/javascript">
+$(document).ready(function(){
+  $('.unfollow_btn').hover(function(){
+    $(this).removeClass('btn-primary');
+    $(this).addClass('btn-danger');
+    $(this).html("Unfollow");
+  }, function(){
+    $(this).html("Following");
+    $(this).removeClass('btn-danger');
+    $(this).addClass('btn-primary');
+  });
+})
+</script>
